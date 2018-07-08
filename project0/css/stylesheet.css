@@ -1,0 +1,28 @@
+h1::before {
+  border-bottom: 1px dashed red; }
+
+.navbar-nav .nav-item a.nav-link {
+  color: red; }
+.navbar-nav li.nav-item.active a.nav-link {
+  color: blue;
+  font-weight: 600; }
+.navbar-nav li.nav-item:hover {
+  background-color: grey; }
+
+#table {
+  border: 1px solid black; }
+
+td {
+  border: 2px solid green;
+  padding: 15px;
+  margin: 20px; }
+
+h1::before {
+  content: '*******'; }
+
+@media (max-width: 768px) {
+  h1::before {
+    content: 'mobile';
+    color: green; } }
+
+/*# sourceMappingURL=stylesheet.css.map */
