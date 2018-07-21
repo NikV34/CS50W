@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import request
 from flask import Flask, session
 from flask import render_template, redirect, url_for
@@ -93,7 +94,37 @@ def search():
         else:
             return redirect(url_for('index'))
     if request.method == 'POST':
+        if 'username' in session:
+            logIn = True
         query = request.form['query']
+        if not query:
+            resultTitle = "No books"
+            result = ""
+        else:
+            resultTitle = "Search books results"
+            result = engine.execute(f"select * from books where concat(isbn,title,author) like '%%{query}%%';").fetchall()
+        return render_template('search_results.html', resultTitle=resultTitle, logIn=logIn, result=result)
+
+
+@app.route('/book/<isbn>')
+def book(isbn):
+    if 'username' in session:
+        logIn = True
+        book = engine.execute(f"select * from books where isbn='{isbn}';").first()
+        try:
+            res = requests.get("https://www.goodreads.com/book/review_counts.json",
+                               params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": book.isbn}).json()
+            average_rating = res['books'][0]['average_rating']
+            ratings_count = res['books'][0]['ratings_count']
+            print(res)
+        except:
+            average_rating = "No average rating"
+            ratings_count = "No ratings count"
+        print(book)
+        return render_template('book.html', logIn=logIn, book=book, average_rating=average_rating, ratings_count=ratings_count)
+    else:
+        return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
