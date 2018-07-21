@@ -11,4 +11,25 @@
     <li>Average rating: <strong>{{ average_rating }}</strong></li>
     <li>Number of ratings: <strong>{{ ratings_count }}</strong></li>
 </ul>
+{% if not visibleReview %}
+<form method="post" name="reviewForm" id="reviewForm">
+    <label class="radio-inline"><input type="radio" name="rating" id="option1" value="1">Rating 1</label>
+    <label class="radio-inline"><input type="radio" name="rating" id="option2" value="2">Rating 2</label>
+    <label class="radio-inline"><input type="radio" name="rating" id="option3" checked value="3">Rating 3</label>
+    <label class="radio-inline"><input type="radio" name="rating" id="option4" value="4">Rating 4</label>
+    <label class="radio-inline"><input type="radio" name="rating" id="option5" value="5">Rating 5</label>
+    <br>
+    <textarea rows="4" cols="50" style="resize: none" id="review" name="review" form="reviewForm"></textarea>
+    <br>
+    <button type="submit" class="btn btn-primary">Add review</button>
+</form>
+{% else %}
+    <ul>
+    {% for rev in allReviews%}
+        <li>User rating: <strong>{{rev.rating}}</strong></li>
+        <li>User review: <strong>{{rev.review}}</strong></li>
+        <br>
+    {% endfor %}
+    </ul>
+{% endif %}
 {% endblock body %}

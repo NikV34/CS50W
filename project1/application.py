@@ -48,8 +48,8 @@ def registration():
         logIn = True
     else:
         logIn = False
-    print(request)
-    print(request.form)
+    #print(request)
+    #print(request.form)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -75,7 +75,7 @@ def login():
         else:
             if userInfo and username and password:
                 session['username'] = username
-                print(userInfo.username)
+                #print(userInfo.username)
 
         return redirect(url_for('index'))
     return render_template('login.html')
@@ -106,22 +106,31 @@ def search():
         return render_template('search_results.html', resultTitle=resultTitle, logIn=logIn, result=result)
 
 
-@app.route('/book/<isbn>')
+@app.route('/book/<isbn>', methods=['GET', 'POST'])
 def book(isbn):
+    book = engine.execute(f"select * from books where isbn='{isbn}';").first()
     if 'username' in session:
+        user_id = engine.execute(f"select * from users where username = '{session['username']}';").first()
+        visibleReview = engine.execute(f"select * from reviews where user_id={user_id.id} and book_id={book.id};").first()
+        #print(visibleReview)
+        if request.method == 'POST':
+            # print('book_id', book.id)
+            # print('username', session['username'])
+            # print(request.form)
+            engine.execute(
+                f"insert into reviews (book_id,user_id,rating,review) values ('{book.id}','{user_id.id}','{request.form['rating']}','{request.form['review']}');")
         logIn = True
-        book = engine.execute(f"select * from books where isbn='{isbn}';").first()
         try:
             res = requests.get("https://www.goodreads.com/book/review_counts.json",
                                params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": book.isbn}).json()
             average_rating = res['books'][0]['average_rating']
             ratings_count = res['books'][0]['ratings_count']
-            print(res)
         except:
             average_rating = "No average rating"
             ratings_count = "No ratings count"
-        print(book)
-        return render_template('book.html', logIn=logIn, book=book, average_rating=average_rating, ratings_count=ratings_count)
+        allReviews = engine.execute(f"select * from reviews where book_id={book.id};").fetchall()
+        return render_template('book.html', logIn=logIn, book=book, average_rating=average_rating,
+                               ratings_count=ratings_count, visibleReview=visibleReview, allReviews=allReviews)
     else:
         return redirect(url_for('index'))
 
