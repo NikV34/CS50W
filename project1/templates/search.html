@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}Search{% endblock title %}
+{% block h1 %}Search book{% endblock h1 %}
+{% block body %}
+<form method="post">
+  <div class="form-group">
+    <label for="inputQuery">Enter the ISBN number or the title or the author</label>
+    <input type="text" class="form-control" id="inputQuery" placeholder="Enter the ISBN number or the title or the author" name="query">
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+{% endblock body %}
