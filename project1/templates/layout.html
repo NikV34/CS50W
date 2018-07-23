@@ -17,11 +17,12 @@
         <li><a href="{{ url_for('index') }}">Main</a></li>
         {% if not logIn %}
         <li><a href="{{ url_for('login') }}">Log in</a></li>
+        <li><a href="{{ url_for('registration') }}">Registration</a></li>
         {% else %}
         <li><a href="{{ url_for('search') }}">Search</a></li>
         <li><a href="{{ url_for('logout') }}">Log out</a></li>
         {% endif %}
-        <li><a href="{{ url_for('registration') }}">Registration</a></li>
+
     </ul>
     {{logIn}}
     {% block body %}{% endblock body %}

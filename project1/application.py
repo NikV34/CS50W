@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 from flask import request
 from flask import Flask, session
@@ -60,7 +61,7 @@ def registration():
             if not userInfo and username and password:
                 engine.execute(f"insert into users (username,password) values ('{username}','{generate_password_hash(password)}');")
                 #session['username'] = username
-        return 'Yeah'
+        return redirect(url_for('index'))
     else:
         return render_template('registration.html', error="We'll never share your username with anyone else", logIn=logIn)
 
@@ -119,6 +120,7 @@ def book(isbn):
             # print(request.form)
             engine.execute(
                 f"insert into reviews (book_id,user_id,rating,review) values ('{book.id}','{user_id.id}','{request.form['rating']}','{request.form['review']}');")
+            visibleReview = True
         logIn = True
         try:
             res = requests.get("https://www.goodreads.com/book/review_counts.json",
@@ -133,6 +135,27 @@ def book(isbn):
                                ratings_count=ratings_count, visibleReview=visibleReview, allReviews=allReviews)
     else:
         return redirect(url_for('index'))
+
+
+@app.route('/api/<isbn>', methods=['GET'])
+def api(isbn):
+    book = engine.execute(f"select * from books where isbn='{isbn}';").first()
+    try:
+        res = requests.get("https://www.goodreads.com/book/review_counts.json",
+                           params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": book.isbn}).json()
+        average_rating = res['books'][0]['average_rating']
+        ratings_count = res['books'][0]['ratings_count']
+    except:
+        average_rating = "No average rating"
+        ratings_count = "No ratings count"
+    return (json.dumps({"book": {
+                    "title": book.title,
+                    "author": book.author,
+                    "year": book.year,
+                    "isbn": isbn,
+                    "review_count": ratings_count,
+                    "average_score": average_rating
+                     }}))
 
 
 
