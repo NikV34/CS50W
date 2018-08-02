@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block title %}Enter_username{% endblock title %}
+{% block h1 %}Enter your username{% endblock h1 %}
+{% block body %}
+    <form method="post">
+      <div class="form-group">
+        <label for="inputUsername">Username</label>
+        <input type="text" class="form-control" id="inputUsername" placeholder="Enter username" name="username">
+        <small id="usernameHelp" class="form-text text-muted">{{error}}</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Enter</button>
+    </form>
+{% endblock body %}
