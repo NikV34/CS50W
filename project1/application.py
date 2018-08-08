@@ -37,7 +37,7 @@ def index():
     else:
         logIn = False
     # res = requests.get("https://www.goodreads.com/book/review_counts.json",
-    #                    params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": "9781632168146"})
+    #                    params={"key": "", "isbns": "9781632168146"})
     # print(res.json())
     # return str(res.json())
     return render_template('index.html', logIn=logIn)
@@ -124,7 +124,7 @@ def book(isbn):
         logIn = True
         try:
             res = requests.get("https://www.goodreads.com/book/review_counts.json",
-                               params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": book.isbn}).json()
+                               params={"key": "", "isbns": book.isbn}).json()
             average_rating = res['books'][0]['average_rating']
             ratings_count = res['books'][0]['ratings_count']
         except:
