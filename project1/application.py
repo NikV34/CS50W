@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 # Check for environment variable
-os.environ["DATABASE_URL"] = 'postgres://nhedgifrbqclmi:9d969bc86ee5bcb1ddbe7ffa81ad51003003fa99ae916a4ded2fd2486db2db1b@ec2-54-217-205-90.eu-west-1.compute.amazonaws.com:5432/d31etsp4aep187'
+os.environ["DATABASE_URL"] = ''
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
 
@@ -142,7 +142,7 @@ def api(isbn):
     book = engine.execute(f"select * from books where isbn='{isbn}';").first()
     try:
         res = requests.get("https://www.goodreads.com/book/review_counts.json",
-                           params={"key": "5ccG1d3jk4MQbymFZ4LsdQ", "isbns": book.isbn}).json()
+                           params={"key": "", "isbns": book.isbn}).json()
         average_rating = res['books'][0]['average_rating']
         ratings_count = res['books'][0]['ratings_count']
     except:
